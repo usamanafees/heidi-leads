@@ -1,0 +1,7 @@
+# Which Claude model each stage uses. Swap freely; costs are logged per call.
+extract: claude-sonnet-5-5     # bulk fact extraction from crawled pages (one call per company)
+check: claude-opus-5-5         # checker: verifies the agent's claims against its sources
+criteria: claude-sonnet-5-5    # turns plain-language criteria changes into YAML edits
+agent_orchestrator: claude-sonnet-5-5   # Agent SDK: coordinates the subagents
+agent_researcher: claude-sonnet-5-5     # Agent SDK subagent: company research (web search + fetch)
+agent_linkedin: claude-haiku-5-5        # Agent SDK subagent: LinkedIn lookups (simple, high volume)

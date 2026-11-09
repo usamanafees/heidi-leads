@@ -1,0 +1,30 @@
+# Discovery settings: where and what to search on Google Places.
+# Change `city` + `bbox` to run the whole pipeline for another city.
+city: Berlin
+
+# Bounding box of the city (south-west / north-east corners).
+bbox:
+  south: 52.338
+  west: 13.088
+  north: 52.675
+  east: 13.761
+
+# Start grid. Cells that hit Google's 60-result cap are split into 4 automatically.
+grid: { rows: 5, cols: 5 }
+max_split_depth: 2
+
+# Google Places search phrases. Each one runs in every grid cell.
+queries:
+  - Hausverwaltung
+  - Immobilienverwaltung
+  - WEG Verwaltung
+  - Mietverwaltung
+
+# Gelbe Seiten category slugs (gelbeseiten.de/branchen/<slug>/<city>).
+directory_terms:
+  - hausverwaltung
+  - immobilienverwaltung
+  - weg-verwaltung
+
+# Keep only results whose postcode is inside the city (Berlin: 10115-14199).
+postcode_range: [10115, 14199]

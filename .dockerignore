@@ -1,0 +1,11 @@
+node_modules
+data
+output
+.env
+google-keys.json
+*-key*.json
+.git
+.github
+docs
+*.bak
+.DS_Store

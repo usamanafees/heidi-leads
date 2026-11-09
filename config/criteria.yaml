@@ -1,0 +1,73 @@
+# Lead qualification criteria for Heidi Systems.
+# Edit weights / thresholds here and run `npm run score` - takes seconds, no re-scraping.
+#
+# Why these KPIs: Heidi earns per installed device + per flat billed, and wins
+# when a manager is (a) the right type, (b) big enough, (c) has a reason to switch now,
+# (d) can plug Heidi into its software, and (e) is reachable.
+
+# ---- Hard filters: fail one => tier "X" (not a lead), regardless of score ----
+gates:
+  must_be_property_manager: true      # pure brokers / facility-only firms are out
+  must_manage_residential: true       # heating-cost billing only exists for residential multi-family
+  exclude_kinds: [municipal_housing]  # degewo, Gewobag & co.: tender-driven, different sales motion
+
+# ---- Scored criteria (weights sum to 100) ----
+criteria:
+  size:
+    weight: 35
+    why: Revenue scales with flats and devices (~6 devices per flat).
+    # units managed -> points (0..1). Uses stated units, else estimate from staff.
+    bands:
+      - { min: 0,    max: 99,    score: 0.15 }
+      - { min: 100,  max: 299,   score: 0.45 }
+      - { min: 300,  max: 999,   score: 0.80 }
+      - { min: 1000, max: 4999,  score: 1.00 }
+      - { min: 5000, max: 999999, score: 0.85 }   # very large: slower, procurement-heavy
+    unknown_score: 0.35
+    units_per_employee: 180            # used only when units are not stated
+
+  segment_fit:
+    weight: 15
+    why: WEG + rental management both need annual HKVO billing; WEG adds owner-meeting deadlines Heidi already sells to.
+    points:
+      weg: 0.5
+      mietverwaltung: 0.5
+      sev: 0.2                         # Sondereigentumsverwaltung: single flats, fewer devices
+      gewerbe_only_penalty: -0.5
+
+  switch_trigger:
+    weight: 20
+    why: Remote-reading becomes mandatory on 1.1.2027; managers with old meters, a big provider, or billing pain have a reason to act now.
+    points:
+      uses_big_provider: 0.4           # ista, Techem, Brunata, Minol, Kalo ... Heidi's pitch vs "the big ones"
+      mentions_billing_pain: 0.3       # complaints / manual work / late Heizkostenabrechnung
+      no_remote_reading_mentioned: 0.3 # nothing about Funk / Fernablesung => likely still to retrofit
+
+  digital_readiness:
+    weight: 10
+    why: Heidi pushes data into the manager's ERP/CRM - a digital manager onboards faster and values the API.
+    points:
+      known_software: 0.5              # Domus, Haufe PowerHaus, Aareon, immoware24, Karthago ...
+      tenant_or_owner_portal: 0.5
+
+  reachability:
+    weight: 15
+    why: A named decision-maker with a personal email turns a lead into a conversation.
+    points:
+      named_decision_maker: 0.4
+      personal_email: 0.4
+      linkedin: 0.2
+
+  channel:
+    weight: 5
+    why: Heidi is a VDIV cooperation partner - VDIV members are a warm intro.
+    points:
+      vdiv_member: 1.0
+      other_association: 0.5           # IVD, BVI, Haus & Grund
+
+# ---- Tiers ----
+tiers:
+  A: 70    # call this week
+  B: 50    # sequence
+  C: 30    # nurture
+  # below C => D

@@ -1,0 +1,10 @@
+.env
+node_modules/
+data/
+output/*.json
+*.bak
+google-keys.json
+*-key*.json
+output/*.xlsx
+output/*.csv
+.DS_Store
